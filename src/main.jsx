@@ -5,6 +5,7 @@ import { RouterProvider } from "react-router/dom"
 import './index.css'
 import App from './App.jsx'
 import Header from './components/Header/Header.jsx'
+import Login from './components/Login/Login.jsx'
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,7 @@ const router = createBrowserRouter([
     element: <Header />,
     children: [
       {index: true, element: <App />},
+      {path: "login", element: <Login />},
     ]
   }
 ])

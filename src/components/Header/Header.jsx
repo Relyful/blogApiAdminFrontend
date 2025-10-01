@@ -44,7 +44,7 @@ export default function Header() {
       {user ? <span>User: {user.username}</span> : <Link to="/login">Login</Link>}
       </div>
     </header>
-    <Outlet />
+    <Outlet context={{user, setUser}} />
     </>
   )
 }
