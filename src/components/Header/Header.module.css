@@ -1,0 +1,11 @@
+.header {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid black;
+  padding: 2rem;
+}
+
+.headerLinks {
+  display: flex;
+  gap: 2em;
+}

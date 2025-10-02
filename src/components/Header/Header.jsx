@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router";
+import styles from "./Header.module.css"
 
 export default function Header() {
   const [user, setUser] = useState(undefined);
   let jwt = localStorage.getItem("authToken");
+
+    function logout() {
+    localStorage.removeItem("authToken");
+    jwt = null;
+    setUser(undefined);
+  }
+
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -38,13 +46,21 @@ export default function Header() {
 
   return (
     <>
-    <header>
+    <header className={styles.header}>
       <h2>Rely's blog admin</h2>
-      <div className="links">
-      {user ? <span>User: {user.username}</span> : <Link to="/login">Login</Link>}
+      <div className={styles.headerLinks}>
+      {user ? (<>
+      <span>User: {user.username}</span> 
+      <span onClick={logout}>Logout</span>
+       </>)
+        : 
+        <Link to="/login">Login</Link>
+        }
       </div>
     </header>
-    <Outlet context={{user, setUser}} />
+    <main>
+      <Outlet context={{user, setUser}} />
+    </main>
     </>
   )
 }

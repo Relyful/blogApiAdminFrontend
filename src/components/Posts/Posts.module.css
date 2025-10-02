@@ -1,0 +1,20 @@
+.post {
+  padding-bottom: 2em;
+  min-width: 50em;
+  border: 1px solid black;  
+}
+
+.posts {
+  padding-top: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 60vw;
+  gap: 2em;
+}
+
+.linkNoUnderscore {
+  color: black;
+  text-decoration: none;
+}
