@@ -8,6 +8,7 @@ import Login from './components/Login/Login.jsx'
 import Home from './components/Home/Home.jsx'
 import Posts from './components/Posts/Posts.jsx'
 import Post from './components/Post/Post.jsx'
+import EditPost from './components/EditPost/EditPost.jsx'
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       {path: "login", element: <Login />},
       {path: "posts", element: <Posts />},
       {path: "posts/:postId", element: <Post />},
+      {path: "posts/edit/:postId", element: <EditPost />}
     ]
   }
 ])

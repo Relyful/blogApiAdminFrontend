@@ -18,3 +18,13 @@
   color: black;
   text-decoration: none;
 }
+
+.adminRow {
+  padding-top: 2em;
+  display: flex;
+  justify-content: space-around;
+}
+
+.adminLink {
+  color: red;
+}

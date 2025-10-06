@@ -1,5 +1,5 @@
 import styles from "./Posts.module.css";
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
 export default function Posts() {
@@ -31,16 +31,33 @@ export default function Posts() {
 
   const postItems = posts.map((post) => {
     return (
-      <Link to={`/posts/${post.id}`} key={post.id} className={styles.linkNoUnderscore}>
-        <div className={`post ${styles.post}`}>
-          <div className="title">{post.title}</div>
-          <div className="message">{post.message}</div>
-          <div className="createdAt">{post.createdAt}</div>
-          <div className="comments">Comments: {post._count.comments}</div>
-          <div className="author">Author: {post.author.username}</div>
+      <div className={`post ${styles.post}`}>
+        <div className="title">{post.title}</div>
+        <div className="message">{post.message}</div>
+        <div className="createdAt">{post.createdAt}</div>
+        <div className="comments">Comments: {post._count.comments}</div>
+        <div className="author">Author: {post.author.username}</div>
+        <div className={styles.adminRow}>
+          <Link
+            to={`/posts/${post.id}`}
+            key={post.id}
+            className={styles.linkNoUnderscore}
+          >
+            Open Post
+          </Link>
+          <Link
+            className={`${styles.linkNoUnderscore}, ${styles.adminLink}`}
+            to={`/posts/edit/${post.id}`}
+          >
+            Edit Post
+          </Link>
         </div>
-      </Link>
+      </div>
     );
   });
-  return <div className={styles.posts}>{posts.length > 0 ? postItems : <p>No posts yet...</p>}</div>;
+  return (
+    <div className={styles.posts}>
+      {posts.length > 0 ? postItems : <p>No posts yet...</p>}
+    </div>
+  );
 }
