@@ -31,7 +31,7 @@ export default function Posts() {
 
   const postItems = posts.map((post) => {
     return (
-      <div className={`post ${styles.post}`}>
+      <div className={`post ${styles.post}`} key={post.id}>
         <div className="title">{post.title}</div>
         <div className="message">{post.message}</div>
         <div className="createdAt">{post.createdAt}</div>

@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useOutletContext } from "react-router";
+import styles from "./EditPost.module.css"
+import { Editor } from '@tinymce/tinymce-react';
 
 export default function EditPost() {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
   const { user } = useOutletContext();
+  const editorRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -47,8 +50,34 @@ export default function EditPost() {
 
   return (
     <div className="post">
-      <div className="title">{post.title}</div>
-      <div className="content">{post.message}</div>      
+      <form className={styles.form}>
+        <label htmlFor="title">Title: </label>
+        <input type="text" name="title" id="title" defaultValue={post.title} />  
+        <label htmlFor="message">Text: </label>
+        <input type="text" name="message" id="message" defaultValue={post.message} />
+
+
+        <Editor
+        apiKey={import.meta.env.VITE_TINYMCE_APIKEY}
+        onInit={ (_evt, editor) => editorRef.current = editor }
+        initialValue={post.message}
+        init={{
+          height: 500,
+          menubar: false,
+          plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+          ],
+          toolbar: 'undo redo | blocks | ' +
+            'bold italic forecolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'removeformat | help',
+          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+        }}
+      />
+
+      </form>      
     </div>
   );
 }
