@@ -5,16 +5,20 @@ import { Editor } from '@tinymce/tinymce-react';
 
 export default function EditPost() {
   const { postId } = useParams();
-  const [post, setPost] = useState(null);
   const { user } = useOutletContext();
   const editorRef = useRef(null);
+
+  let controller = new AbortController();
+  let signal = controller.signal;
+
+  const [post, setPost] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
     const jwt = localStorage.getItem("authToken");
     const fetchPost = async () => {
-      try {
+      try {        
         const response = await fetch(`http://localhost:8080/posts/${postId}`, {
           signal,
           headers: {
@@ -40,7 +44,43 @@ export default function EditPost() {
     return () => controller.abort();
   }, [postId]);
 
-  if (user.role !== "ADMIN") {
+  async function handleFormSubmit(e) {
+    controller.abort();
+    e.preventDefault();
+    const jwt = localStorage.getItem("authToken");
+    controller = new AbortController();
+    signal = controller.signal;
+
+    console.log(e.target)
+    const formData = new FormData(e.target);
+    const newTitle = formData.get('title');
+    const newMesasge = editorRef.current.getContent();
+    const requestBody = {
+      'title': newTitle,
+      'message': newMesasge, 
+    };
+    console.log(requestBody);
+
+    try {
+      console.log(postId)
+      const response = await fetch(`http://localhost:8080/posts/${postId}`, {
+        signal,
+        method: 'PUT',
+        body: JSON.stringify(requestBody),
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Error posting data to server');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  if (!user || user.role !== "ADMIN") {
     return <h2>You do not have permission to access this page</h2>
   }
 
@@ -49,15 +89,13 @@ export default function EditPost() {
   }
 
   return (
-    <div className="post">
-      <form className={styles.form}>
+    <div className={`post ${styles.post}`}>
+      <form className={styles.form} onSubmit={handleFormSubmit}>
         <label htmlFor="title">Title: </label>
         <input type="text" name="title" id="title" defaultValue={post.title} />  
         <label htmlFor="message">Text: </label>
-        <input type="text" name="message" id="message" defaultValue={post.message} />
-
-
         <Editor
+        id="message"
         apiKey={import.meta.env.VITE_TINYMCE_APIKEY}
         onInit={ (_evt, editor) => editorRef.current = editor }
         initialValue={post.message}
@@ -69,7 +107,7 @@ export default function EditPost() {
             'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
             'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
           ],
-          toolbar: 'undo redo | blocks | ' +
+          toolbar: 'undo redo ' +
             'bold italic forecolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat | help',
@@ -77,7 +115,8 @@ export default function EditPost() {
         }}
       />
 
-      </form>      
+      <button type="submit">Submit</button>
+      </form>
     </div>
   );
 }
