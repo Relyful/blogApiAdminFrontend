@@ -95,7 +95,7 @@ export default function Post() {
   return (
     <div className="post">
       <div className="title">{post.title}</div>
-      <div className="content">{post.message}</div>
+      <div className="content" dangerouslySetInnerHTML={{__html: post.message}} />
       <div className="comments">
         {post.comments.length < 1 ? <p>No comments yet.</p> : <Comments commentsData={post.comments}/>}
       </div>

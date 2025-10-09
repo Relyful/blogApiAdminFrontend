@@ -33,7 +33,7 @@ export default function Posts() {
     return (
       <div className={`post ${styles.post}`} key={post.id}>
         <div className="title">{post.title}</div>
-        <div className="message">{post.message}</div>
+        <div className="message" dangerouslySetInnerHTML={{__html: post.message}}/>
         <div className="createdAt">{post.createdAt}</div>
         <div className="comments">Comments: {post._count.comments}</div>
         <div className="author">Author: {post.author.username}</div>
