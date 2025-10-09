@@ -1,9 +1,11 @@
 import styles from "./Posts.module.css";
-import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router";
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
+  const controllerRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -29,11 +31,38 @@ export default function Posts() {
     return () => controller.abort();
   }, []);
 
+  async function handleDelete(postId) {
+    const confirmDelete = window.confirm('Are you sure you want do delete this post ?');
+    if(!confirmDelete) return;
+
+    const jwt = localStorage.getItem("authToken");
+    if(controllerRef.current) controllerRef.current.abort();
+    const controller = new AbortController();
+    controllerRef.current = controller;
+
+    try{
+      const response = await fetch(`http://localhost:8080/posts/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        'Content-Type': 'application/json',
+      }
+    })
+    if (!response.ok) {
+      throw new Error('Error communicating with server');
+    }
+    console.log(response);
+    navigate(0);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
   const postItems = posts.map((post) => {
     return (
       <div className={`post ${styles.post}`} key={post.id}>
         <div className="title">{post.title}</div>
-        <div className="message" dangerouslySetInnerHTML={{__html: post.message}}/>
+        <div className={`message ${styles.message}`} dangerouslySetInnerHTML={{__html: post.message}}/>
         <div className="createdAt">{post.createdAt}</div>
         <div className="comments">Comments: {post._count.comments}</div>
         <div className="author">Author: {post.author.username}</div>
@@ -43,14 +72,15 @@ export default function Posts() {
             key={post.id}
             className={styles.linkNoUnderscore}
           >
-            Open Post
+            Open
           </Link>
           <Link
             className={`${styles.linkNoUnderscore}, ${styles.adminLink}`}
             to={`/posts/edit/${post.id}`}
           >
-            Edit Post
+            Edit
           </Link>
+          <button type="button" onClick={() => handleDelete(post.id)}>DELETE</button>          
         </div>
       </div>
     );

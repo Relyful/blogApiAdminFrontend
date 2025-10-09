@@ -7,9 +7,7 @@ export default function EditPost() {
   const { postId } = useParams();
   const { user } = useOutletContext();
   const editorRef = useRef(null);
-
-  let controller = new AbortController();
-  let signal = controller.signal;
+  const controllerRef = useRef(null);
 
   const [post, setPost] = useState(null);
 
@@ -45,11 +43,14 @@ export default function EditPost() {
   }, [postId]);
 
   async function handleFormSubmit(e) {
-    controller.abort();
     e.preventDefault();
+
+    if(controllerRef.current) controllerRef.current.abort();
+
+    const controller = new AbortController();
+    controllerRef.current = controller;
+
     const jwt = localStorage.getItem("authToken");
-    controller = new AbortController();
-    signal = controller.signal;
 
     console.log(e.target)
     const formData = new FormData(e.target);
@@ -64,7 +65,7 @@ export default function EditPost() {
     try {
       console.log(postId)
       const response = await fetch(`http://localhost:8080/posts/${postId}`, {
-        signal,
+        signal: controller.signal,
         method: 'PUT',
         body: JSON.stringify(requestBody),
         headers: {

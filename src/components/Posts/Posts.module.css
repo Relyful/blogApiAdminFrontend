@@ -28,3 +28,7 @@
 .adminLink {
   color: red;
 }
+
+.message {
+  max-height: 2em;
+}
