@@ -2,8 +2,37 @@ import styles from "./Posts.module.css";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 
+function PublishToggle({ postId }) {
+  const [published, setPublished] = useState(false);
+
+  async function handlePublishCheckbox(e, postId) {
+    setPublished(e.target.checked);
+    const publishValue = e.target.checked;
+    //FINISH FETCH ADD VALUES, HEADERS
+    try {
+      const response = await fetch(`http://localhost:8080/posts/${postId}/publish`);
+      if(!response.ok) {
+        throw new Error("Error connecting to server");
+      }
+
+    } catch(err) {
+      console.error(err);
+    }
+
+
+    console.log(e.target.checked);
+  }
+
+  return (
+    <label>
+      <input type="checkbox" checked={published} onChange={(e) => handlePublishCheckbox(e, postId)} />
+      Publish
+    </label>
+  )
+}
+
 export default function Posts() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);  
   const controllerRef = useRef(null);
   const navigate = useNavigate();
 
@@ -81,6 +110,9 @@ export default function Posts() {
             Edit
           </Link>
           <button type="button" onClick={() => handleDelete(post.id)}>DELETE</button>          
+        </div>
+        <div className={`${styles.adminRow}`}>
+          <PublishToggle postId={post.id} />
         </div>
       </div>
     );
