@@ -1,26 +1,40 @@
 import styles from "./Posts.module.css";
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
-function PublishToggle({ postId }) {
-  const [published, setPublished] = useState(false);
+function PublishToggle({ postId, initialPublished }) {
+  const [published, setPublished] = useState(initialPublished);
+  const publishController = useRef(null);
 
-  async function handlePublishCheckbox(e, postId) {
-    setPublished(e.target.checked);
+  async function handlePublishCheckbox(e, postId) {    
     const publishValue = e.target.checked;
+    if (publishController.current) publishController.current.abort();
+    const jwt = localStorage.getItem('authToken');
+    const controller = new AbortController();
+    publishController.current = controller;
+    const signal = controller.signal;
     //FINISH FETCH ADD VALUES, HEADERS
     try {
-      const response = await fetch(`http://localhost:8080/posts/${postId}/publish`);
+      const response = await fetch(`http://localhost:8080/posts/${postId}/publish`, {
+        signal,
+        method: 'PUT',
+        body: JSON.stringify({'published': publishValue}),
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        }
+      });
       if(!response.ok) {
         throw new Error("Error connecting to server");
       }
-
+      setPublished(publishValue);
+      console.log(response);
     } catch(err) {
       console.error(err);
     }
 
 
-    console.log(e.target.checked);
+    console.log(publishValue);
   }
 
   return (
@@ -34,7 +48,6 @@ function PublishToggle({ postId }) {
 export default function Posts() {
   const [posts, setPosts] = useState([]);  
   const controllerRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -71,6 +84,7 @@ export default function Posts() {
 
     try{
       const response = await fetch(`http://localhost:8080/posts/${postId}`, {
+      signal: controller.signal,
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -81,7 +95,7 @@ export default function Posts() {
       throw new Error('Error communicating with server');
     }
     console.log(response);
-    navigate(0);
+    setPosts(posts.filter((post) => post.id !== postId));
     } catch(err) {
       console.error(err);
     }
@@ -112,7 +126,7 @@ export default function Posts() {
           <button type="button" onClick={() => handleDelete(post.id)}>DELETE</button>          
         </div>
         <div className={`${styles.adminRow}`}>
-          <PublishToggle postId={post.id} />
+          <PublishToggle postId={post.id} initialPublished={post.published}/>
         </div>
       </div>
     );
