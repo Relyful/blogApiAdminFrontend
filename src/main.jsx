@@ -9,6 +9,7 @@ import Home from './components/Home/Home.jsx'
 import Posts from './components/Posts/Posts.jsx'
 import Post from './components/Post/Post.jsx'
 import EditPost from './components/EditPost/EditPost.jsx'
+import NewPost from './components/NewPost/NewPost.jsx'
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,8 @@ const router = createBrowserRouter([
       {path: "login", element: <Login />},
       {path: "posts", element: <Posts />},
       {path: "posts/:postId", element: <Post />},
-      {path: "posts/edit/:postId", element: <EditPost />}
+      {path: "posts/edit/:postId", element: <EditPost />},
+      {path: "posts/create", element: <NewPost />}
     ]
   }
 ])
