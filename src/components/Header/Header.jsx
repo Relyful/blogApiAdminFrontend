@@ -51,6 +51,7 @@ export default function Header() {
         <div className={styles.headerLinks}>
           {user ? (
             <>
+              <Link to='/posts/create'>Create post</Link>
               <span>User: {user.username}</span>
               <span onClick={logout}>Logout</span>
             </>
