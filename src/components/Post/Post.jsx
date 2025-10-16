@@ -1,58 +1,53 @@
 // import styles from "./Post.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router";
 import styles from './Post.module.css';
 
-function Comments({ commentsData }) {
+function Comments({ commentsData, setComments }) {
+  const controllerRef = useRef(null);
+  async function handleDeleteComment(postId, commentId) {
+    console.log(postId, commentId);
+    const jwt = localStorage.getItem('authToken');
+    try {
+      if(controllerRef.current) controllerRef.current.abort();
+      const controller = new AbortController();
+      controllerRef.current = controller;
+      const signal = controller.signal;
+      const response = await fetch(`http://localhost:8080/posts/${postId}/comments/admin/${commentId}`, {
+        method: 'DELETE',
+        signal,
+        headers: {
+          'Authorization': `Bearer ${jwt}`
+        },
+      });
+    if (!response.ok) {
+      throw new Error('Error deleting comment');
+    }
+    setComments(prev => prev.filter(c => c.id !== commentId));
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
   const commentsResult = commentsData.map(comment => {
     return (
       <div className={`comment ${styles.comment}`} key={comment.id}>
         <p className="commentTitle">{comment.author.username} said on {comment.createdAt}: </p>
         <p className="commentMessage">{comment.message}</p>
+        <div className="adminRow">
+          <button type="button" onClick={() => handleDeleteComment(comment.postId, comment.id)}>Delete comment</button>
+        </div>
       </div>
     )
   });
   return <>{commentsResult}</>;
 }
 
-function NewCommentForm({ postId }) {
-
-  async function handleNewComment(e) {
-    console.log({'works': e});
-    const jwt = localStorage.getItem("authToken");
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const newComment = formData.get('newComment');
-    try {
-      const requestBody = {'message': newComment};
-      const response = await fetch(`http://localhost:8080/posts/${postId}/comments`, {
-        method: 'POST', 
-        body: JSON.stringify(requestBody), 
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-          'Content-Type': 'application/json',
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Error posting data to server');
-      }
-    } catch(err) {
-      console.error(err);
-    }
-  }
-  return (
-    <form onSubmit={handleNewComment}>
-      <label htmlFor="newComment">New comment: </label>
-      <input type="text" name="newComment" id="newComment" />
-      <button type="submit">Comment</button>
-    </form>
-  )
-}
-
 export default function Post() {
   const { postId } = useParams();
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
       const controller = new AbortController();
@@ -71,6 +66,7 @@ export default function Post() {
           const postData = await response.json();
           console.log(postData);
           setPost(postData)
+          setComments(postData.comments)
           setLoading(false);
         } catch (err) {
           if (err.name === "AbortError") {
@@ -99,7 +95,7 @@ export default function Post() {
         <div className="content" dangerouslySetInnerHTML={{__html: post.message}} />
       </div>
       <div className="comments">
-        {post.comments.length < 1 ? <p>No comments yet.</p> : <Comments commentsData={post.comments}/>}
+        {comments.length < 1 ? <p>No comments yet.</p> : <Comments commentsData={comments} setComments={setComments}/>}
       </div>      
     </div>    
   );
