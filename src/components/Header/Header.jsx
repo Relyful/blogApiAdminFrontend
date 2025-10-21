@@ -56,7 +56,7 @@ export default function Header() {
               <span onClick={logout}>Logout</span>
             </>
           ) : (
-            <Link to="/login">Login</Link>
+            <Link to="/login" className={styles.linkContent}>Login</Link>
           )}
         </div>
       </header>
