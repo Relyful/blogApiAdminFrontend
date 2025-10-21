@@ -104,7 +104,7 @@ export default function Posts() {
   const postItems = posts.map((post) => {
     return (
       <div className={`post ${styles.post}`} key={post.id}>
-        <h2 className={`title`}>{post.title}</h2>
+        <h2 className={`title, ${styles.title}`}>{post.title}</h2>
         <div className={`message ${styles.message}`} dangerouslySetInnerHTML={{__html: post.message}}/>
         <div className="createdAt">Created: {new Date(post.createdAt).toLocaleDateString(undefined, {day: 'numeric', month: 'long', year: 'numeric'})}</div>
         <div className="comments">Comments: {post._count.comments}</div>
