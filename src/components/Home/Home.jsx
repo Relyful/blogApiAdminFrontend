@@ -6,7 +6,7 @@ export default function Home() {
     <div className={styles.banner}>
       <Link to="posts" className={styles.linkContent}>
         <div className={styles.bannerContent}>
-          <h1>Welcome to <br/>Rely's Blog Admin page</h1>
+          <h1 className={styles.h1}>Welcome to <br/>Rely's Blog Admin</h1>
           <div className={styles.button}>Enter</div>
         </div>
       </Link>
