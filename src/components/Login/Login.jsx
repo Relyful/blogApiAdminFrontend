@@ -24,7 +24,7 @@ async function handleLogIn(e) {
       console.log(responseData);
       setUser(responseData.userData);
       localStorage.setItem("authToken", responseData.token);
-      navigate('/');
+      navigate('/posts');
     } catch (err) {
       console.error(err);
     }

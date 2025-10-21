@@ -1,8 +1,10 @@
 .header {
   display: flex;
   justify-content: space-around;
-  border-bottom: 1px solid black;
+  /* border-bottom: 1px solid black; */
   padding: 2rem;
+  background-color: #1B3C53;
+  color: #FFF8F3;
 }
 
 .headerLinks {

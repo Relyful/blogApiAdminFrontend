@@ -81,7 +81,7 @@ main {
   align-items: center;
   flex-direction: column;
   flex-grow: 1;
-  
+  background-color: #1B3C53;
 }
 
 #root {
