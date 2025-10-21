@@ -104,26 +104,26 @@ export default function Posts() {
   const postItems = posts.map((post) => {
     return (
       <div className={`post ${styles.post}`} key={post.id}>
-        <div className="title">{post.title}</div>
+        <h2 className={`title`}>{post.title}</h2>
         <div className={`message ${styles.message}`} dangerouslySetInnerHTML={{__html: post.message}}/>
-        <div className="createdAt">{post.createdAt}</div>
+        <div className="createdAt">Created: {new Date(post.createdAt).toLocaleDateString(undefined, {day: 'numeric', month: 'long', year: 'numeric'})}</div>
         <div className="comments">Comments: {post._count.comments}</div>
         <div className="author">Author: {post.author.username}</div>
         <div className={styles.adminRow}>
           <Link
             to={`/posts/${post.id}`}
             key={post.id}
-            className={styles.linkNoUnderscore}
+            className={`${styles.button}`}
           >
             Open
           </Link>
           <Link
-            className={`${styles.linkNoUnderscore}, ${styles.adminLink}`}
+            className={`${styles.adminLink}, ${styles.button}`}
             to={`/posts/edit/${post.id}`}
           >
             Edit
           </Link>
-          <button type="button" onClick={() => handleDelete(post.id)}>DELETE</button>          
+          <button className={`${styles.button}`} type="button" onClick={() => handleDelete(post.id)}>DELETE</button>          
         </div>
         <div className={`${styles.adminRow}`}>
           <PublishToggle postId={post.id} initialPublished={post.published}/>
