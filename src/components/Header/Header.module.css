@@ -11,3 +11,8 @@
   display: flex;
   gap: 2em;
 }
+
+.linkContent {
+  text-decoration: none;
+  color: white;  
+}
