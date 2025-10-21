@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router";
+import styles from "./Login.module.css"
 
 export default function Login() {
   const navigate = useNavigate();
@@ -31,16 +32,18 @@ async function handleLogIn(e) {
   }
   
   return(
-    <>
-    <h2>This is a login form</h2>
-    <form action="" method="post" onSubmit={handleLogIn}>
-      <label htmlFor="username">Username: </label>
-      <input type="text" name="username" id="username" />
-      <label htmlFor="password">Password: </label>
-      <input type="password" name="password" id="password" />
-      <button type="submit">Submit</button>
-    </form>
-    <p>{err}</p>
-  </>
+    <div className={styles.login}>
+    <div className={styles.loginContent}>
+      <h2>Log In</h2>
+      <form className={styles.mainForm} onSubmit={handleLogIn}>
+        <label htmlFor="username">Username: </label>
+        <input type="text" name="username" id="username" />
+        <label htmlFor="password">Password: </label>
+        <input type="password" name="password" id="password" />
+        <button type="submit" className={styles.button}>Submit</button>
+      </form>
+      <p className={styles.error}>{err}</p>
+    </div>
+  </div>
   )
 }
