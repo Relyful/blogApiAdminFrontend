@@ -75,6 +75,7 @@ textarea:not([rows]) {
 }
 
 /* CUSTOM CSS HERE */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 main {
   display: flex;
@@ -88,4 +89,5 @@ main {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: "Nunito", sans-serif;
 }
