@@ -47,7 +47,7 @@ export default function Header() {
   return (
     <>
       <header className={styles.header}>
-        <Link to='/' className={`${styles.logo}`}><h2>Rely's blog admin</h2></Link>
+        <Link to='/' className={`logo ${styles.logo}`}><h2>Rely's blog admin</h2></Link>
         <div className={styles.headerLinks}>
           {user ? (
             <>
