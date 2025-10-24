@@ -21,6 +21,9 @@
   width: fit-content;
   align-self: center;
   padding: 0.5em 1.6em;
+  background-color: #F9F3EF;
+  border: none;
+  border-radius: 5px;
 }
 
 .postTitle {
