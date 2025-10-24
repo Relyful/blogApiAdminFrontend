@@ -1,8 +1,8 @@
-.form {
+/* .form {
   display: flex;
   flex-direction: column;
   max-width: 60%;
-}
+} */
 
 .post {
   max-width: 75%;
@@ -10,4 +10,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.title {
+  color: white;
+}
+
+.mainForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin-top: 4em;
+  color: white;
+}
+
+.mainForm input {
+  border: none;
+  padding: 0.3em;
+  border-radius: 5px;
+  background-color: #f9f3ef;
+}
+
+.mainForm button {
+  margin-top: 1em;
+  width: fit-content;
+  align-self: center;
+  padding: 0.5em 1.6em;
+  background-color: #F9F3EF;
+  border: none;
+  border-radius: 5px;
 }

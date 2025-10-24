@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useOutletContext } from "react-router";
-import styles from "./EditPost.module.css"
-import { Editor } from '@tinymce/tinymce-react';
+import styles from "./EditPost.module.css";
+import { Editor } from "@tinymce/tinymce-react";
 
 export default function EditPost() {
   const { postId } = useParams();
@@ -16,7 +16,7 @@ export default function EditPost() {
     const signal = controller.signal;
     const jwt = localStorage.getItem("authToken");
     const fetchPost = async () => {
-      try {        
+      try {
         const response = await fetch(`http://localhost:8080/posts/${postId}`, {
           signal,
           headers: {
@@ -45,36 +45,36 @@ export default function EditPost() {
   async function handleFormSubmit(e) {
     e.preventDefault();
 
-    if(controllerRef.current) controllerRef.current.abort();
+    if (controllerRef.current) controllerRef.current.abort();
 
     const controller = new AbortController();
     controllerRef.current = controller;
 
     const jwt = localStorage.getItem("authToken");
 
-    console.log(e.target)
+    console.log(e.target);
     const formData = new FormData(e.target);
-    const newTitle = formData.get('title');
+    const newTitle = formData.get("title");
     const newMesasge = editorRef.current.getContent();
     const requestBody = {
-      'title': newTitle,
-      'message': newMesasge, 
+      title: newTitle,
+      message: newMesasge,
     };
     console.log(requestBody);
 
     try {
-      console.log(postId)
+      console.log(postId);
       const response = await fetch(`http://localhost:8080/posts/${postId}`, {
         signal: controller.signal,
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify(requestBody),
         headers: {
           Authorization: `Bearer ${jwt}`,
-          'Content-Type': 'application/json',
-        }
+          "Content-Type": "application/json",
+        },
       });
       if (!response.ok) {
-        throw new Error('Error posting data to server');
+        throw new Error("Error posting data to server");
       }
     } catch (error) {
       console.error(error);
@@ -82,7 +82,7 @@ export default function EditPost() {
   }
 
   if (!user || user.role !== "ADMIN") {
-    return <h2>You do not have permission to access this page</h2>
+    return <h2>You do not have permission to access this page</h2>;
   }
 
   if (!post) {
@@ -90,34 +90,59 @@ export default function EditPost() {
   }
 
   return (
-    <div className={`post ${styles.post}`}>
-      <form className={styles.form} onSubmit={handleFormSubmit}>
-        <label htmlFor="title">Title: </label>
-        <input type="text" name="title" id="title" defaultValue={post.title} />  
-        <label htmlFor="message">Text: </label>
-        <Editor
-        id="message"
-        apiKey={import.meta.env.VITE_TINYMCE_APIKEY}
-        onInit={ (_evt, editor) => editorRef.current = editor }
-        initialValue={post.message}
-        init={{
-          height: 500,
-          menubar: false,
-          plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-          ],
-          toolbar: 'undo redo ' +
-            'bold italic forecolor | alignleft aligncenter ' +
-            'alignright alignjustify | bullist numlist outdent indent | ' +
-            'removeformat | help',
-          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-        }}
-      />
+    <>
+      <h2 className={styles.title}>Edit post</h2>
+      <div className={`post ${styles.post}`}>
+        <form className={styles.mainForm} onSubmit={handleFormSubmit}>
+          <label htmlFor="title">Title: </label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            defaultValue={post.title}
+          />
+          <label htmlFor="message">Text: </label>
+          <Editor
+            id="message"
+            apiKey={import.meta.env.VITE_TINYMCE_APIKEY}
+            onInit={(_evt, editor) => (editorRef.current = editor)}
+            initialValue={post.message}
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                "advlist",
+                "autolink",
+                "lists",
+                "link",
+                "image",
+                "charmap",
+                "preview",
+                "anchor",
+                "searchreplace",
+                "visualblocks",
+                "code",
+                "fullscreen",
+                "insertdatetime",
+                "media",
+                "table",
+                "code",
+                "help",
+                "wordcount",
+              ],
+              toolbar:
+                "undo redo " +
+                "bold italic forecolor | alignleft aligncenter " +
+                "alignright alignjustify | bullist numlist outdent indent | " +
+                "removeformat | help",
+              content_style:
+                "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+            }}
+          />
 
-      <button type="submit">Submit</button>
-      </form>
-    </div>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </>
   );
 }
