@@ -6,47 +6,57 @@ function PublishToggle({ postId, initialPublished }) {
   const [published, setPublished] = useState(initialPublished);
   const publishController = useRef(null);
 
-  async function handlePublishCheckbox(e, postId) {    
+  async function handlePublishCheckbox(e, postId) {
     const publishValue = e.target.checked;
     if (publishController.current) publishController.current.abort();
-    const jwt = localStorage.getItem('authToken');
+
+    const jwt = localStorage.getItem("authToken");
     const controller = new AbortController();
     publishController.current = controller;
     const signal = controller.signal;
-    //FINISH FETCH ADD VALUES, HEADERS
+
     try {
-      const response = await fetch(`http://localhost:8080/posts/${postId}/publish`, {
-        signal,
-        method: 'PUT',
-        body: JSON.stringify({'published': publishValue}),
-        headers: {
-          'Authorization': `Bearer ${jwt}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      if(!response.ok) {
-        throw new Error("Error connecting to server");
-      }
+      const response = await fetch(
+        `http://localhost:8080/posts/${postId}/publish`,
+        {
+          signal,
+          method: "PUT",
+          body: JSON.stringify({ published: publishValue }),
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      if (!response.ok) throw new Error("Error connecting to server");
       setPublished(publishValue);
-      console.log(response);
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
-
-
-    console.log(publishValue);
   }
 
+  const checkboxId = `publish-toggle-${postId}`;
+
   return (
-    <label>
-      <input type="checkbox" checked={published} onChange={(e) => handlePublishCheckbox(e, postId)} />
-      Publish
-    </label>
-  )
+    <div className={styles.publishRow}>
+      <p>Publish: </p>
+      <div className={styles["checkbox-wrapper-6"]}>
+        <input
+          className={`${styles.tgl} ${styles["tgl-light"]}`}
+          id={checkboxId}
+          type="checkbox"
+          onChange={(e) => handlePublishCheckbox(e, postId)}
+          checked={published}
+        />
+        <label className={styles["tgl-btn"]} htmlFor={checkboxId} />
+      </div>
+    </div>
+  );
 }
 
+
 export default function Posts() {
-  const [posts, setPosts] = useState([]);  
+  const [posts, setPosts] = useState([]);
   const controllerRef = useRef(null);
 
   useEffect(() => {
@@ -74,29 +84,31 @@ export default function Posts() {
   }, []);
 
   async function handleDelete(postId) {
-    const confirmDelete = window.confirm('Are you sure you want do delete this post ?');
-    if(!confirmDelete) return;
+    const confirmDelete = window.confirm(
+      "Are you sure you want do delete this post ?",
+    );
+    if (!confirmDelete) return;
 
     const jwt = localStorage.getItem("authToken");
-    if(controllerRef.current) controllerRef.current.abort();
+    if (controllerRef.current) controllerRef.current.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
 
-    try{
+    try {
       const response = await fetch(`http://localhost:8080/posts/${postId}`, {
-      signal: controller.signal,
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-        'Content-Type': 'application/json',
+        signal: controller.signal,
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Error communicating with server");
       }
-    })
-    if (!response.ok) {
-      throw new Error('Error communicating with server');
-    }
-    console.log(response);
-    setPosts(posts.filter((post) => post.id !== postId));
-    } catch(err) {
+      console.log(response);
+      setPosts(posts.filter((post) => post.id !== postId));
+    } catch (err) {
       console.error(err);
     }
   }
@@ -105,8 +117,18 @@ export default function Posts() {
     return (
       <div className={`post ${styles.post}`} key={post.id}>
         <h2 className={`title, ${styles.title}`}>{post.title}</h2>
-        <div className={`message ${styles.message}`} dangerouslySetInnerHTML={{__html: post.message}}/>
-        <div className="createdAt">Created: {new Date(post.createdAt).toLocaleDateString(undefined, {day: 'numeric', month: 'long', year: 'numeric'})}</div>
+        <div
+          className={`message ${styles.message}`}
+          dangerouslySetInnerHTML={{ __html: post.message }}
+        />
+        <div className="createdAt">
+          Created:{" "}
+          {new Date(post.createdAt).toLocaleDateString(undefined, {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })}
+        </div>
         <div className="comments">Comments: {post._count.comments}</div>
         <div className="author">Author: {post.author.username}</div>
         <div className={styles.adminRow}>
@@ -123,10 +145,16 @@ export default function Posts() {
           >
             Edit
           </Link>
-          <button className={`${styles.button}`} type="button" onClick={() => handleDelete(post.id)}>DELETE</button>          
+          <button
+            className={`${styles.button}`}
+            type="button"
+            onClick={() => handleDelete(post.id)}
+          >
+            DELETE
+          </button>
         </div>
         <div className={`${styles.adminRow}`}>
-          <PublishToggle postId={post.id} initialPublished={post.published}/>
+          <PublishToggle postId={post.id} initialPublished={post.published} />
         </div>
       </div>
     );
