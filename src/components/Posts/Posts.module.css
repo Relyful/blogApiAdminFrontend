@@ -56,6 +56,10 @@
   color: #D2C1B6
 }
 
+.loading {
+  color: white;
+}
+
 /* Custom checkbox */
 .checkbox-wrapper-6 .tgl {
   display: none;

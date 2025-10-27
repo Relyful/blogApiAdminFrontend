@@ -57,6 +57,7 @@ function PublishToggle({ postId, initialPublished }) {
 
 export default function Posts() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const controllerRef = useRef(null);
 
   useEffect(() => {
@@ -71,6 +72,7 @@ export default function Posts() {
         const postsData = await response.json();
         console.log(postsData);
         setPosts(postsData);
+        setLoading(false);
       } catch (err) {
         if (err.name === "AbortError") {
           console.log("Request aborted");
@@ -159,6 +161,11 @@ export default function Posts() {
       </div>
     );
   });
+
+  if (loading) {
+    return <p className={styles.loading}>Loading...</p>;
+  }
+
   return (
     <div className={styles.posts}>
       {posts.length > 0 ? postItems : <p>No posts yet...</p>}
