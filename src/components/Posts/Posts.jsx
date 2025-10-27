@@ -129,6 +129,8 @@ export default function Posts() {
             day: "numeric",
             month: "long",
             year: "numeric",
+            hour: "numeric",
+            minute: "numeric"
           })}
         </div>
         <div className="comments">Comments: {post._count.comments}</div>

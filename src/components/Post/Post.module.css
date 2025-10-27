@@ -1,6 +1,13 @@
+.comments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .comment {
   padding-bottom: 1em;
   color: white;
+  overflow: auto;
 }
 
 .post {  
