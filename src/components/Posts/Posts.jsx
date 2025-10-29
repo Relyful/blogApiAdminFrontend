@@ -65,7 +65,7 @@ export default function Posts() {
     const signal = controller.signal;
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:8080/posts", { signal });
+        const response = await fetch("http://localhost:8080/posts/all", { signal });
         if (!response.ok) {
           throw new Error("Fetch error");
         }

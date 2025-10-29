@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useNavigate } from "react-router";
 import styles from "./Header.module.css";
 
 export default function Header() {
   const [user, setUser] = useState(undefined);
+  const navigate = useNavigate();
   let jwt = localStorage.getItem("authToken");
 
   function logout() {
     localStorage.removeItem("authToken");
     jwt = null;
     setUser(undefined);
+    navigate('/');
   }
 
   useEffect(() => {
