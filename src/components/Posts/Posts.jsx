@@ -63,9 +63,15 @@ export default function Posts() {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
+    const jwt = localStorage.getItem("authToken");
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:8080/posts/all", { signal });
+        const response = await fetch("http://localhost:8080/posts/all", {
+          signal,
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          }
+        });
         if (!response.ok) {
           throw new Error("Fetch error");
         }
