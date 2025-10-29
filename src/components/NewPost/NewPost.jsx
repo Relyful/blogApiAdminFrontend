@@ -1,10 +1,12 @@
 import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import styles from "./NewPost.module.css";
+import { useNavigate } from "react-router";
 
 export default function NewPost() {
   const controllerRef = useRef(null);
   const editorRef = useRef(null);
+  const navigate = useNavigate();
 
   async function formSubmitHandler(e) {
     e.preventDefault();
@@ -31,7 +33,10 @@ export default function NewPost() {
         },
         body: JSON.stringify(fetchBody),
       });
-      console.log(response);
+      if (!response.ok) {
+        throw new Error('Couludnt post data');
+      }
+      navigate('/posts');
     } catch (err) {
       console.error(err);
     }
@@ -89,6 +94,7 @@ export default function NewPost() {
             <input
               className={`${styles.tgl} ${styles["tgl-light"]}`}
               id="cb1-6"
+              name="publish"
               type="checkbox"
             />
             <label className={styles["tgl-btn"]} htmlFor="cb1-6" />
