@@ -8,6 +8,7 @@ export default function NewPost() {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useOutletContext();
+  console.log(import.meta.env.VITE_TINYMCE_APIKEY)
 
   async function formSubmitHandler(e) {
     e.preventDefault();
