@@ -78,8 +78,8 @@ export default function Posts() {
             Authorization: `Bearer ${jwt}`,
           }
         });
-        if (response.status === 401) {
-          setError('Unathorized');
+        if (response.status === 401 || response.status === 403) {
+          throw new Error("Unauthorized");
         }
         if (!response.ok) {
           throw new Error("Fetch error");
@@ -92,6 +92,7 @@ export default function Posts() {
         if (err.name === "AbortError") {
           console.log("Request aborted");
         } else {
+          setError(err.message);
           console.log(err);
         }
       }

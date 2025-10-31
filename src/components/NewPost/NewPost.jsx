@@ -1,12 +1,13 @@
 import { useRef } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import styles from "./NewPost.module.css";
-import { useNavigate } from "react-router";
+import { useNavigate, useOutletContext } from "react-router";
 
 export default function NewPost() {
   const controllerRef = useRef(null);
   const editorRef = useRef(null);
   const navigate = useNavigate();
+  const { user } = useOutletContext();
 
   async function formSubmitHandler(e) {
     e.preventDefault();
@@ -41,6 +42,10 @@ export default function NewPost() {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  if (!user || user.role !== "ADMIN") {
+    return <h2>You do not have permission to access this page</h2>
   }
 
   return (
