@@ -59,9 +59,10 @@ export default function Post() {
       const controller = new AbortController();
       const signal = controller.signal;
       const jwt = localStorage.getItem("authToken");
+      const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
       const fetchPost = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/posts/${postId}`, { signal, 
+          const response = await fetch(`${backendAddress}/posts/${postId}`, { signal, 
             headers: {
               Authorization: `Bearer ${jwt}`,
             }, });

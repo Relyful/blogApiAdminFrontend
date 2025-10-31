@@ -10,14 +10,15 @@ export default function EditPost() {
   const controllerRef = useRef(null);
 
   const [post, setPost] = useState(null);
-
+  
   useEffect(() => {
+    const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
     const controller = new AbortController();
     const signal = controller.signal;
     const jwt = localStorage.getItem("authToken");
     const fetchPost = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/posts/${postId}`, {
+        const response = await fetch(`${backendAddress}/posts/${postId}`, {
           signal,
           headers: {
             Authorization: `Bearer ${jwt}`,
@@ -43,6 +44,7 @@ export default function EditPost() {
   }, [postId]);
 
   async function handleFormSubmit(e) {
+    const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
     e.preventDefault();
 
     if (controllerRef.current) controllerRef.current.abort();
@@ -64,7 +66,7 @@ export default function EditPost() {
 
     try {
       console.log(postId);
-      const response = await fetch(`http://localhost:8080/posts/${postId}`, {
+      const response = await fetch(`${backendAddress}/posts/${postId}`, {
         signal: controller.signal,
         method: "PUT",
         body: JSON.stringify(requestBody),

@@ -14,10 +14,11 @@ function PublishToggle({ postId, initialPublished }) {
     const controller = new AbortController();
     publishController.current = controller;
     const signal = controller.signal;
+    const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
 
     try {
       const response = await fetch(
-        `http://localhost:8080/posts/${postId}/publish`,
+        `${backendAddress}/posts/${postId}/publish`,
         {
           signal,
           method: "PUT",
@@ -58,20 +59,28 @@ function PublishToggle({ postId, initialPublished }) {
 export default function Posts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const controllerRef = useRef(null);
-
+  
   useEffect(() => {
+    setError(null);
+    const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
+    console.log(backendAddress)
     const controller = new AbortController();
     const signal = controller.signal;
     const jwt = localStorage.getItem("authToken");
+    
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:8080/posts/all", {
+        const response = await fetch(`${backendAddress}/posts/all`, {
           signal,
           headers: {
             Authorization: `Bearer ${jwt}`,
           }
         });
+        if (response.status === 401) {
+          setError('Unathorized');
+        }
         if (!response.ok) {
           throw new Error("Fetch error");
         }
@@ -92,6 +101,7 @@ export default function Posts() {
   }, []);
 
   async function handleDelete(postId) {
+    const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
     const confirmDelete = window.confirm(
       "Are you sure you want do delete this post ?",
     );
@@ -103,7 +113,7 @@ export default function Posts() {
     controllerRef.current = controller;
 
     try {
-      const response = await fetch(`http://localhost:8080/posts/${postId}`, {
+      const response = await fetch(`${backendAddress}/posts/${postId}`, {
         signal: controller.signal,
         method: "DELETE",
         headers: {
@@ -169,6 +179,10 @@ export default function Posts() {
       </div>
     );
   });
+
+  if (error) {
+    return <p className={styles.loading}>{error}</p>
+  }
 
   if (loading) {
     return <p className={styles.loading}>Loading...</p>;

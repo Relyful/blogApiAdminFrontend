@@ -17,6 +17,7 @@ export default function NewPost() {
     const formData = new FormData(e.target);
     const title = formData.get("title");
     const post = editorRef.current.getContent();
+    const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
     const fetchBody = {
       title,
       message: post,
@@ -24,7 +25,7 @@ export default function NewPost() {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/posts/", {
+      const response = await fetch(`${backendAddress}/posts/`, {
         signal: controller.signal,
         method: "POST",
         headers: {
