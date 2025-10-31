@@ -13,7 +13,8 @@ function Comments({ commentsData, setComments }) {
       const controller = new AbortController();
       controllerRef.current = controller;
       const signal = controller.signal;
-      const response = await fetch(`http://localhost:8080/posts/${postId}/comments/admin/${commentId}`, {
+      const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
+      const response = await fetch(`${backendAddress}/posts/${postId}/comments/admin/${commentId}`, {
         method: 'DELETE',
         signal,
         headers: {
