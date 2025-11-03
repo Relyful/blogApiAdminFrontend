@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useOutletContext } from "react-router";
+import { useParams, useOutletContext, useNavigate } from "react-router";
 import styles from "./EditPost.module.css";
 import { Editor } from "@tinymce/tinymce-react";
 
@@ -8,8 +8,8 @@ export default function EditPost() {
   const { user } = useOutletContext();
   const editorRef = useRef(null);
   const controllerRef = useRef(null);
-
   const [post, setPost] = useState(null);
+  const navigate = useNavigate(); 
   
   useEffect(() => {
     const backendAddress = import.meta.env.VITE_backend_address || 'http://localhost:8080';
@@ -78,6 +78,7 @@ export default function EditPost() {
       if (!response.ok) {
         throw new Error("Error posting data to server");
       }
+      navigate(`/posts/${postId}`)
     } catch (error) {
       console.error(error);
     }
