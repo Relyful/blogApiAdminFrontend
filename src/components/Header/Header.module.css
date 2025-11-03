@@ -9,12 +9,22 @@
 
 .headerLinks {
   display: flex;
-  gap: 2em;
+  gap: 1em;
+}
+
+.linkContent:hover {
+  transform: scale(1.05);
 }
 
 .linkContent {
+  transition: transform .2s ease-in-out;
   text-decoration: none;
   color: #F9F3EF;
+  padding: 0.5em 1em;
+  background-color: #456882;
+  border-radius: 13px;
+  cursor: pointer;
+  font-weight: bolder;
 }
 
 .logo {
