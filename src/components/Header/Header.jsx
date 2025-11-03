@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router";
 import styles from "./Header.module.css";
+import Footer from "../Footer/Footer";
 
 export default function Header() {
   const [user, setUser] = useState(undefined);
@@ -56,8 +57,8 @@ export default function Header() {
             <>
               <Link to='/posts/create' className={styles.linkContent}>Create post</Link>
               <Link to='/posts' className={styles.linkContent}>Posts</Link>
-              <span>User: {user.username}</span>
-              <span onClick={logout}>Logout</span>
+              <span className={styles.linkContent}>User: {user.username}</span>
+              <span className={styles.linkContent} onClick={logout}>Logout</span>
             </>
           ) : (
             <Link to="/login" className={styles.linkContent}>Login</Link>
@@ -67,6 +68,7 @@ export default function Header() {
       <main>
         <Outlet context={{ user, setUser }} />
       </main>
+      <Footer />
     </>
   );
 }
